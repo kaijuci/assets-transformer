@@ -8,9 +8,13 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use: "xfrmr",
+	Use:   "xfrmr",
+	Short: "Transforms image files into properly named and sized Android assets",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
+		if len(args) == 0 {
+			cmd.Help()
+		}
 	},
 }
 
