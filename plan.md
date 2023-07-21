@@ -4,7 +4,7 @@
 
 Setup the project with core libraries that allow to exercise the main functionality of resizing image assets. First is Android.
 
-- [ ] 1. Add `cobra` for CLI
+- [x] 1. Add `cobra` for CLI
 - [ ] 2. Add `ImageMagick` for image processing
 - [ ] 3. Define unit tests and test data for Android
 - [ ] 4. Add internal Kaiju CI pipeline
