@@ -9,7 +9,12 @@ const (
 	GIF  AssetFormat = "gif"
 )
 
+type AssetSize struct {
+	Width  int
+	Height int
+}
+
 type TransformOptions struct {
-	Size   string
+	Size   AssetSize
 	Format AssetFormat
 }
