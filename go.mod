@@ -4,7 +4,7 @@ go 1.20
 
 require github.com/spf13/cobra v1.7.0
 
-require gopkg.in/gographics/imagick.v3 v3.4.3 // indirect
+require gopkg.in/gographics/imagick.v3 v3.4.3
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
