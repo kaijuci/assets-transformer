@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"fmt"
 	"image"
 
 	_ "image/gif"
@@ -28,7 +29,8 @@ func TestPNGConversion(t *testing.T) {
 		t.Errorf("error creating transformer: %v", err)
 	}
 
-	result, err := at.Transform(facePNG, &TransformOptions{Format: PNG, Size: AssetSize{Width: 100, Height: 100}})
+	outfile := fmt.Sprintf("/tmp/%s", "face.png")
+	result, err := at.Transform(facePNG, &TransformOption{Format: PNG, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
 	if err != nil {
 		t.Fatalf("error transforming asset: %v", err)
 	}
@@ -73,7 +75,7 @@ func getImageSizeAndFormat(filename string) (*AssetSize, *AssetFormat, error) {
 		return nil, nil, err
 	}
 
-	size := AssetSize{im.Width, im.Height}
+	size := AssetSize{uint(im.Width), uint(im.Height)}
 	assetFormat := AssetFormat(format)
 
 	return &size, &assetFormat, nil

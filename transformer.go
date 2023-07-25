@@ -1,9 +1,15 @@
 package transformer
 
-import "errors"
+import (
+	"errors"
+	"log"
+	"os"
+
+	"gopkg.in/gographics/imagick.v3/imagick"
+)
 
 type AssetTransformer interface {
-	Transform(string, ...*TransformOptions) (*string, error)
+	Transform(string, ...*TransformOption) (*string, error)
 }
 
 func NewAssetTransformer() (AssetTransformer, error) {
@@ -12,6 +18,52 @@ func NewAssetTransformer() (AssetTransformer, error) {
 
 type impl struct{}
 
-func (i *impl) Transform(asset string, options ...*TransformOptions) (*string, error) {
-	return nil, errors.New("not implemented")
+func (i *impl) Transform(asset string, options ...*TransformOption) (*string, error) {
+	opt, err := i.validateOptions(options)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open(asset)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	imagick.Initialize()
+	defer imagick.Terminate()
+
+	wand := imagick.NewMagickWand()
+
+	err = wand.ReadImageFile(file)
+	if err != nil {
+		return nil, err
+	}
+
+	// wand.SetImageInterpolateMethod(imagick.INTERPOLATE_PIXEL_BICUBIC)
+	err = wand.ResizeImage(opt.Size.Width, opt.Size.Height, imagick.FILTER_LANCZOS2_SHARP)
+	if err != nil {
+		log.Printf("error resizing image: %v", err)
+		return nil, err
+	}
+
+	err = wand.WriteImage(opt.Outfile)
+	if err != nil {
+		return nil, err
+	}
+
+	return &opt.Outfile, nil
+}
+
+func (i *impl) validateOptions(options []*TransformOption) (*TransformOption, error) {
+	if len(options) == 0 {
+		return nil, errors.New("no options provided for operations")
+	}
+
+	opt := options[0]
+	if len(opt.Outfile) == 0 {
+		return nil, errors.New("outfile not specified")
+	}
+
+	return opt, nil
 }

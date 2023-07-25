@@ -10,11 +10,12 @@ const (
 )
 
 type AssetSize struct {
-	Width  int
-	Height int
+	Width  uint
+	Height uint
 }
 
-type TransformOptions struct {
-	Size   AssetSize
-	Format AssetFormat
+type TransformOption struct {
+	Size    AssetSize
+	Format  AssetFormat
+	Outfile string
 }
