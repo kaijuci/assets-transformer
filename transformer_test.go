@@ -154,6 +154,135 @@ func TestPNGtoGIFConversion(t *testing.T) {
 	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
 }
 
+func TestJPEGtoPNGConversion(t *testing.T) {
+	at, err := NewAssetTransformer()
+	if err != nil {
+		t.Errorf("error creating transformer: %v", err)
+	}
+
+	outfile := fmt.Sprintf("/tmp/%s", "face.png")
+	result, err := at.Transform(faceJPEG, &TransformOption{Format: PNG, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
+	if err != nil {
+		t.Fatalf("error transforming asset: %v", err)
+	}
+
+	if len(*result) == 0 {
+		t.Fatalf("result is empty")
+	}
+
+	size, format, err := getImageSizeAndFormat(*result)
+	if err != nil {
+		t.Fatalf("error getting image size and format: %v", err)
+	}
+
+	if size.Width != 100 || size.Height != 100 {
+		t.Fatalf("expected size 100x100, got %v", *size)
+	}
+
+	if *format != PNG {
+		t.Fatalf("expected format png, got %s", *format)
+	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+
+}
+
+func TestJPEGtoJPEGConversion(t *testing.T) {
+	at, err := NewAssetTransformer()
+	if err != nil {
+		t.Errorf("error creating transformer: %v", err)
+	}
+
+	outfile := fmt.Sprintf("/tmp/%s", "face.jpeg")
+	result, err := at.Transform(faceJPEG, &TransformOption{Format: JPEG, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
+	if err != nil {
+		t.Fatalf("error transforming asset: %v", err)
+	}
+
+	if len(*result) == 0 {
+		t.Fatalf("result is empty")
+	}
+
+	size, format, err := getImageSizeAndFormat(*result)
+	if err != nil {
+		t.Fatalf("error getting image size and format: %v", err)
+	}
+
+	if size.Width != 100 || size.Height != 100 {
+		t.Fatalf("expected size 100x100, got %v", *size)
+	}
+
+	if *format != JPEG {
+		t.Fatalf("expected format png, got %s", *format)
+	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+}
+
+func TestJPEGtoWEBPConversion(t *testing.T) {
+	at, err := NewAssetTransformer()
+	if err != nil {
+		t.Errorf("error creating transformer: %v", err)
+	}
+
+	outfile := fmt.Sprintf("/tmp/%s", "face.webp")
+	result, err := at.Transform(faceJPEG, &TransformOption{Format: WEBP, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
+	if err != nil {
+		t.Fatalf("error transforming asset: %v", err)
+	}
+
+	if len(*result) == 0 {
+		t.Fatalf("result is empty")
+	}
+
+	size, format, err := getImageSizeAndFormat(*result)
+	if err != nil {
+		t.Fatalf("error getting image size and format: %v", err)
+	}
+
+	if size.Width != 100 || size.Height != 100 {
+		t.Fatalf("expected size 100x100, got %v", *size)
+	}
+
+	if *format != WEBP {
+		t.Fatalf("expected format png, got %s", *format)
+	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+}
+
+func TestJPEGtoGIFConversion(t *testing.T) {
+	at, err := NewAssetTransformer()
+	if err != nil {
+		t.Errorf("error creating transformer: %v", err)
+	}
+
+	outfile := fmt.Sprintf("/tmp/%s", "face.gif")
+	result, err := at.Transform(faceJPEG, &TransformOption{Format: GIF, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
+	if err != nil {
+		t.Fatalf("error transforming asset: %v", err)
+	}
+
+	if len(*result) == 0 {
+		t.Fatalf("result is empty")
+	}
+
+	size, format, err := getImageSizeAndFormat(*result)
+	if err != nil {
+		t.Fatalf("error getting image size and format: %v", err)
+	}
+
+	if size.Width != 100 || size.Height != 100 {
+		t.Fatalf("expected size 100x100, got %v", *size)
+	}
+
+	if *format != GIF {
+		t.Fatalf("expected format png, got %s", *format)
+	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+}
+
 func getImageSizeAndFormat(filename string) (*AssetSize, *AssetFormat, error) {
 	reader, err := os.Open(filename)
 	if err != nil {
