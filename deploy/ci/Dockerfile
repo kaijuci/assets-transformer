@@ -29,7 +29,7 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
-    go test -v ./...
+    go test -v -cover ./...
 
 # build
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
