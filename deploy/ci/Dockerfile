@@ -37,6 +37,6 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
-    go build -v cmd/*.go -o main
+    go build -v -o main cmd/*.go
 
 CMD ["/app/main"]
