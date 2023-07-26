@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.authors="sumeet@kaiju.ci"
 
 # install imagemagick and others
 RUN apk update && apk -U --no-cache add \
+    build-base \
     tree \
     imagemagick imagemagick-dev
 
