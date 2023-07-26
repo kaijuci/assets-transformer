@@ -19,6 +19,9 @@ RUN pkg-config --cflags --libs MagickWand
 # fetch dependencies
 RUN go get -u -t -v all
 
+# verify imagemagick
+RUN convert --version
+
 # test
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     CGO_ENABLED=0 \
