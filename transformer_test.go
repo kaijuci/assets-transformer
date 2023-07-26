@@ -39,8 +39,6 @@ func TestPNGConversion(t *testing.T) {
 		t.Fatalf("result is empty")
 	}
 
-	t.Logf("Result: %s", *result)
-
 	size, format, err := getImageSizeAndFormat(*result)
 	if err != nil {
 		t.Fatalf("error getting image size and format: %v", err)
@@ -53,13 +51,16 @@ func TestPNGConversion(t *testing.T) {
 	if *format != PNG {
 		t.Fatalf("expected format png, got %s", *format)
 	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+
 }
 
-func TestJPEGConverstion(t *testing.T) {
+func TestJPEGConversion(t *testing.T) {
 	// t.Errorf("Test not implemented")
 }
 
-func TestWEBPConverstion(t *testing.T) {
+func TestWEBPConversion(t *testing.T) {
 	// t.Errorf("Test not implemented")
 }
 
