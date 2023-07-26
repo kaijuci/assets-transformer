@@ -2,11 +2,11 @@ FROM golang:1.20.6-alpine
 LABEL org.opencontainers.image.authors="sumeet@kaiju.ci"
 
 # https://pkgs.alpinelinux.org/package/edge/community/x86/imagemagick
-ENV IMAGEMAGICK_VERSION=7.1.1.14-r0
 
+# install imagemagick and others
 RUN apk update && apk -U --no-cache add \
     tree \
-    imagemagick 
+    imagemagick libmagickwand-dev
 
 WORKDIR /app
 COPY . /app
