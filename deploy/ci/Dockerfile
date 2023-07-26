@@ -24,7 +24,7 @@ RUN convert --version
 
 # test
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=1 \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
@@ -32,7 +32,7 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
 
 # build
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=1 \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
