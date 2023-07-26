@@ -39,8 +39,6 @@ func TestPNGConversion(t *testing.T) {
 		t.Fatalf("result is empty")
 	}
 
-	t.Logf("Result: %s", *result)
-
 	size, format, err := getImageSizeAndFormat(*result)
 	if err != nil {
 		t.Fatalf("error getting image size and format: %v", err)
@@ -53,13 +51,44 @@ func TestPNGConversion(t *testing.T) {
 	if *format != PNG {
 		t.Fatalf("expected format png, got %s", *format)
 	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
+
 }
 
-func TestJPEGConverstion(t *testing.T) {
-	// t.Errorf("Test not implemented")
+func TestJPEGConversion(t *testing.T) {
+	at, err := NewAssetTransformer()
+	if err != nil {
+		t.Errorf("error creating transformer: %v", err)
+	}
+
+	outfile := fmt.Sprintf("/tmp/%s", "face.jpeg")
+	result, err := at.Transform(facePNG, &TransformOption{Format: JPEG, Size: AssetSize{Width: 100, Height: 100}, Outfile: outfile})
+	if err != nil {
+		t.Fatalf("error transforming asset: %v", err)
+	}
+
+	if len(*result) == 0 {
+		t.Fatalf("result is empty")
+	}
+
+	size, format, err := getImageSizeAndFormat(*result)
+	if err != nil {
+		t.Fatalf("error getting image size and format: %v", err)
+	}
+
+	if size.Width != 100 || size.Height != 100 {
+		t.Fatalf("expected size 100x100, got %v", *size)
+	}
+
+	if *format != JPEG {
+		t.Fatalf("expected format png, got %s", *format)
+	}
+
+	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
 }
 
-func TestWEBPConverstion(t *testing.T) {
+func TestWEBPConversion(t *testing.T) {
 	// t.Errorf("Test not implemented")
 }
 

@@ -35,6 +35,12 @@ func (i *impl) Transform(asset string, options ...*TransformOption) (*string, er
 
 	wand := imagick.NewMagickWand()
 
+	err = wand.PingImage(asset)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("original name: %s size:%dx%d format:%s", asset, wand.GetImageWidth(), wand.GetImageHeight(), wand.GetImageFormat())
+
 	err = wand.ReadImageFile(file)
 	if err != nil {
 		return nil, err
@@ -43,7 +49,11 @@ func (i *impl) Transform(asset string, options ...*TransformOption) (*string, er
 	// wand.SetImageInterpolateMethod(imagick.INTERPOLATE_PIXEL_BICUBIC)
 	err = wand.ResizeImage(opt.Size.Width, opt.Size.Height, imagick.FILTER_LANCZOS2_SHARP)
 	if err != nil {
-		log.Printf("error resizing image: %v", err)
+		return nil, err
+	}
+
+	err = wand.SetImageFormat(string(opt.Format))
+	if err != nil {
 		return nil, err
 	}
 
