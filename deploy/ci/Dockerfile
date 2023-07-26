@@ -13,6 +13,9 @@ COPY . /app
 
 RUN tree .
 
+# check imagemagick installation
+RUN pkg-config --cflags --libs MagickWand
+
 # fetch dependencies
 RUN go get -u -t -v all
 
