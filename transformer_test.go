@@ -16,14 +16,16 @@ import (
 
 const (
 	facePNG  string = "testdata/face.png"
-	touchPNG string = "testdata/touch.png"
+	faceJPEG string = "testdata/face.jpeg"
+	faceGIF  string = "testdata/face.gif"
+	faceWEBP string = "testdata/face.webp"
 )
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestPNGConversion(t *testing.T) {
+func TestPNGtoPNGConversion(t *testing.T) {
 	at, err := NewAssetTransformer()
 	if err != nil {
 		t.Errorf("error creating transformer: %v", err)
@@ -56,7 +58,7 @@ func TestPNGConversion(t *testing.T) {
 
 }
 
-func TestJPEGConversion(t *testing.T) {
+func TestPNGtoJPEGConversion(t *testing.T) {
 	at, err := NewAssetTransformer()
 	if err != nil {
 		t.Errorf("error creating transformer: %v", err)
@@ -88,7 +90,7 @@ func TestJPEGConversion(t *testing.T) {
 	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
 }
 
-func TestWEBPConversion(t *testing.T) {
+func TestPNGtoWEBPConversion(t *testing.T) {
 	at, err := NewAssetTransformer()
 	if err != nil {
 		t.Errorf("error creating transformer: %v", err)
@@ -120,7 +122,7 @@ func TestWEBPConversion(t *testing.T) {
 	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
 }
 
-func TestGIFConversion(t *testing.T) {
+func TestPNGtoGIFConversion(t *testing.T) {
 	at, err := NewAssetTransformer()
 	if err != nil {
 		t.Errorf("error creating transformer: %v", err)
