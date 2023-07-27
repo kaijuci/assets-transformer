@@ -7,13 +7,13 @@ type AndroidTransformOption struct {
 	TargetDPI []AssetDPI
 }
 
-type AndroidAssetDensityTransformer interface {
+type AndroidAssetTransformer interface {
 	GetDPIDictionary() AndroidAssetDensityDictionary
 	GetIconSpecDictionary() AndroidIconSpecDictionary
-	TransformAsset(string, string, ...AndroidTransformOption) (*string, error)
+	TransformAsset(string, string, ...*AndroidTransformOption) ([]string, error)
 }
 
-func NewAndroidAssetDensityTransformer() (AndroidAssetDensityTransformer, error) {
+func NewAndroidAssetTransformer() (AndroidAssetTransformer, error) {
 	return &impl{newAndroidAssetDensityDictionary(), newAndroidIconSpecDictionary()}, nil
 }
 
@@ -30,6 +30,6 @@ func (i *impl) GetIconSpecDictionary() AndroidIconSpecDictionary {
 	return i.iconSpecDict
 }
 
-func (i *impl) TransformAsset(filename string, name string, options ...AndroidTransformOption) (*string, error) {
+func (i *impl) TransformAsset(filename string, name string, options ...*AndroidTransformOption) ([]string, error) {
 	return nil, errors.New("not implemented")
 }
