@@ -29,7 +29,7 @@ type AndroidIconSpec struct {
 
 type AndroidIconSpecDictionary map[AndroidIconType]AndroidIconSpec
 
-func newAndroidIconSpecDictionary() AndroidIconSpecDictionary {
+func NewAndroidIconSpecDictionary() AndroidIconSpecDictionary {
 	return AndroidIconSpecDictionary{
 		AndroidIconTypeLauncher:     AndroidIconSpec{Prefix: "ic_launcher", Width: 512, Height: 512},
 		AndroidIconTypeAction:       AndroidIconSpec{Prefix: "ic_action", Width: 192, Height: 192},

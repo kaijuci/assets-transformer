@@ -37,7 +37,7 @@ func (a AndroidAssetDensity) MakeAssetPath(rootPath, asset string) string {
 
 type AndroidAssetDensityDictionary map[AssetDPI]AndroidAssetDensity
 
-func newAndroidAssetDensityDictionary() AndroidAssetDensityDictionary {
+func NewAndroidAssetDensityDictionary() AndroidAssetDensityDictionary {
 	return AndroidAssetDensityDictionary{
 		LDPI:    AndroidAssetDensity{DPI: LDPI, ResPath: DrawableLDPI, Width: 36, Height: 36},
 		MDPI:    AndroidAssetDensity{DPI: MDPI, ResPath: DrawableMDPI, Width: 48, Height: 48},
