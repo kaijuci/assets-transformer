@@ -3,7 +3,6 @@ package transformer
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/kaijuci/assets-transformer/android"
@@ -46,8 +45,6 @@ func (i *androidimpl) TransformAsset(filename string, name string, options ...*A
 	}
 
 	var paths []string
-
-	log.Printf("opts: %v", opts)
 
 	for dir, opt := range opts {
 		err = i.ensureRootDir(dir)
@@ -93,7 +90,6 @@ func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOp
 			Format:  src.Format,
 			Outfile: filename,
 		}
-		log.Printf("opt: %v", opt)
 		opts[path] = opt
 	}
 
