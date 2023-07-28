@@ -5,7 +5,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 
 # fetch dependencies
-RUN go get -u -t -v all
+RUN go mod download
 
 FROM base AS go-build
 
