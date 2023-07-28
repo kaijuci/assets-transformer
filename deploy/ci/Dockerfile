@@ -10,7 +10,7 @@ RUN apk update && apk -U --no-cache add \
     imagemagick imagemagick-dev
 
 WORKDIR /app
-COPY . /app
+COPY . .
 
 RUN tree .
 
@@ -29,7 +29,7 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
-    go build -v -o main cmd/*.go
+    go build -v ./...
 
 # test
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
