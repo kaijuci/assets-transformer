@@ -24,7 +24,10 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
-    go build ./...
+    go build \
+    -ldflags "-X github.com/kaijuci/assets-transformer/vars.Version=$(git rev-parse --short HEAD)" \
+    -o xfrmr \
+    cmd/main.go
 
 # test
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
@@ -36,3 +39,6 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
 
 # print report
 RUN cat results.out
+
+# echo version - mostly to satisfy kaniko
+CMD ./xfrmr 
