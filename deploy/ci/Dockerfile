@@ -38,11 +38,9 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     go build -v ./...
 
 # test
-RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
+CMD CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     CGO_ENABLED=1 \
     GOOS=linux \
     GOARCH=amd64 \
     GO111MODULE=on \
     go test -v ./...
-
-CMD ["/app/main"]
