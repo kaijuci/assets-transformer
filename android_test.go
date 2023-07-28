@@ -1,18 +1,27 @@
 package transformer
 
 import (
+	"fmt"
 	"testing"
+	"time"
+
+	"github.com/kaijuci/assets-transformer/android"
 )
 
 const rollerSkatePNG = "testdata/roller-skate.png"
 
 func TestLauncherIcon(t *testing.T) {
-	at, err := NewAndroidAssetTransformer()
+	workDir := fmt.Sprintf("/tmp/at-%d", time.Now().UnixMilli())
+	at, err := NewAndroidAssetTransformer(workDir)
 	if err != nil {
 		t.Fatalf("failed to create AndroidAssetTransformer: %v", err)
 	}
 
-	gen, err := at.TransformAsset(rollerSkatePNG, "ic_launcher")
+	opt := AndroidTransformOption{
+		IconType: android.AndroidIconTypeLauncher,
+		Format:   PNG,
+	}
+	gen, err := at.TransformAsset(rollerSkatePNG, "app", &opt)
 	if err != nil {
 		t.Fatalf("failed to transform asset: %v", err)
 	}

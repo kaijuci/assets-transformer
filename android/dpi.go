@@ -24,6 +24,10 @@ const (
 	DrawableXXXHDPI AssetResPath = "drawable-xxxhdpi"
 )
 
+func NewDPIList() []AssetDPI {
+	return []AssetDPI{LDPI, MDPI, HDPI, XHDPI, XXHDPI, XXXHDPI}
+}
+
 type AndroidAssetDensity struct {
 	DPI     AssetDPI     `json:"dpi"`
 	ResPath AssetResPath `json:"res_path"`
@@ -31,8 +35,8 @@ type AndroidAssetDensity struct {
 	Height  uint         `json:"height"`
 }
 
-func (a AndroidAssetDensity) MakeAssetPath(rootPath, asset string) string {
-	return fmt.Sprintf("%s/%s/%s", rootPath, a.ResPath, asset)
+func (a AndroidAssetDensity) MakeAssetPath(asset string) string {
+	return fmt.Sprintf("%s/%s", a.ResPath, asset)
 }
 
 type AndroidAssetDensityDictionary map[AssetDPI]AndroidAssetDensity
