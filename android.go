@@ -3,7 +3,6 @@ package transformer
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/kaijuci/assets-transformer/android"
@@ -45,7 +44,6 @@ func (i *androidimpl) TransformAsset(filename string, name string, options ...*A
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("opts: %v", opts)
 
 	at, err := NewAssetTransformer()
 	if err != nil {
