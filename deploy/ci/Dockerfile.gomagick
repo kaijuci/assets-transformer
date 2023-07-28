@@ -1,0 +1,17 @@
+# pushed manually to https://hub.docker.com/repository/docker/kaijuci/gomagick/general
+FROM golang:1.20.6-alpine AS gomagick
+LABEL org.opencontainers.image.authors="sumeet@kaiju.ci"
+
+# https://pkgs.alpinelinux.org/package/edge/community/x86/imagemagick
+
+# install imagemagick and others
+RUN apk update && apk -U --no-cache add \
+    build-base \
+    tree \
+    imagemagick imagemagick-dev
+
+# verify imagemagick
+RUN convert --version
+
+# check imagemagick installation
+RUN pkg-config --cflags --libs MagickWand
