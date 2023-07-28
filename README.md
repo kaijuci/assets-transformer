@@ -4,9 +4,22 @@ In course of mobile app development, a developer receives an asset file from the
 
 Initially, only Android is supported. iOS support is planned.
 
-# Dockerfile
+# Docker
 
 The Dockerfile is used to build the container image that can be used to run the asset transformer. At the moment `deploy/ci/Dockerfile` is used for CI builds. It has `test` and `build` targets. In future `deploy/cd/Dockerfile` will be used for CD builds. It will have `build` and `publish` targets. Additionally `deploy/prod/Dockerfile` will provide a container image which can be used to transform assets in any container environment.
+
+The CI `Dockerfile` depends on a base image, `Dockerfile.gomagick`, so that it sources cached image during CI builds. This speeds up the build process by approx `30 seconds`, rest will require configuring the build and module cache. The base image is being published manually atm-
+
+```bash
+# build the image locally
+docker build -t gomagick:2.0 -f deploy/ci/Dockerfile.gomagick .
+
+# tag the image
+docker tag a32623302329 kaijuci/gomagick:2.0
+
+# push the image
+docker tag a32623302329 kaijuci/gomagick:2.0
+```
 
 # Plan
 
