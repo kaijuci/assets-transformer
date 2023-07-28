@@ -18,7 +18,7 @@ docker build -t gomagick:2.0 -f deploy/ci/Dockerfile.gomagick .
 docker tag a32623302329 kaijuci/gomagick:2.0
 
 # push the image
-docker tag a32623302329 kaijuci/gomagick:2.0
+docker push kaijuci/gomagick:2.0
 ```
 
 # Plan
