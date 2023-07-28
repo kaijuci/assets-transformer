@@ -23,14 +23,6 @@ RUN go get -u -t -v all
 # verify imagemagick
 RUN convert --version
 
-# test
-RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
-    CGO_ENABLED=1 \
-    GOOS=linux \
-    GOARCH=amd64 \
-    GO111MODULE=on \
-    go test -v -cover ./...
-
 # build
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     CGO_ENABLED=1 \
@@ -38,5 +30,13 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOARCH=amd64 \
     GO111MODULE=on \
     go build -v -o main cmd/*.go
+
+# test
+RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
+    CGO_ENABLED=1 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GO111MODULE=on \
+    go test -v ./...
 
 CMD ["/app/main"]

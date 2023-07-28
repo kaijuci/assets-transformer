@@ -2,7 +2,6 @@ package transformer
 
 import (
 	"errors"
-	"log"
 	"os"
 
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -39,7 +38,6 @@ func (i *impl) Transform(asset string, options ...*TransformOption) (*string, er
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("original name: %s size:%dx%d format:%s", asset, wand.GetImageWidth(), wand.GetImageHeight(), wand.GetImageFormat())
 
 	err = wand.ReadImageFile(file)
 	if err != nil {
