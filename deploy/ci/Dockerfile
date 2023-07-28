@@ -41,4 +41,4 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
 RUN cat results.out
 
 # echo version - mostly to satisfy kaniko
-CMD ./xfrmr 
+ENTRYPOINT ["/app/xfrmr"]
