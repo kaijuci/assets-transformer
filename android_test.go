@@ -30,8 +30,23 @@ func TestLauncherIconPNG(t *testing.T) {
 		t.Fatalf("expected 6 assets, got %d", len(gen))
 	}
 
-	for _, g := range gen {
-		t.Logf("generated: %s", g)
+	dpiDict := android.NewAndroidAssetDensityDictionary()
+
+	for dpi, file := range gen {
+		size, format, err := getImageSizeAndFormat(file)
+		if err != nil {
+			t.Fatalf("failed to get image size and format: %v", err)
+		}
+
+		if *format != PNG {
+			t.Fatalf("expected PNG format, got %s", string(*format))
+		}
+
+		density := dpiDict[dpi]
+		if size.Width != density.Width || size.Height != density.Height {
+			t.Fatalf("expected %dx%d, got %dx%d", density.Width, density.Height, size.Width, size.Height)
+		}
+		t.Logf("generated: %s %dx%d %s", file, size.Width, size.Height, string(*format))
 	}
 }
 
@@ -55,7 +70,22 @@ func TestLauncherIconWEBP(t *testing.T) {
 		t.Fatalf("expected 6 assets, got %d", len(gen))
 	}
 
-	for _, g := range gen {
-		t.Logf("generated: %s", g)
+	dpiDict := android.NewAndroidAssetDensityDictionary()
+
+	for dpi, file := range gen {
+		size, format, err := getImageSizeAndFormat(file)
+		if err != nil {
+			t.Fatalf("failed to get image size and format: %v", err)
+		}
+
+		if *format != WEBP {
+			t.Fatalf("expected PNG format, got %s", string(*format))
+		}
+
+		density := dpiDict[dpi]
+		if size.Width != density.Width || size.Height != density.Height {
+			t.Fatalf("expected %dx%d, got %dx%d", density.Width, density.Height, size.Width, size.Height)
+		}
+		t.Logf("generated: %s %dx%d %s", file, size.Width, size.Height, string(*format))
 	}
 }

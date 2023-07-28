@@ -3,6 +3,7 @@ package transformer
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/kaijuci/assets-transformer/android"
@@ -14,7 +15,7 @@ type AndroidTransformOption struct {
 }
 
 type AndroidAssetTransformer interface {
-	TransformAsset(string, string, ...*AndroidTransformOption) ([]string, error)
+	TransformAsset(string, string, ...*AndroidTransformOption) (map[android.AssetDPI]string, error)
 }
 
 func NewAndroidAssetTransformer(workDir string) (AndroidAssetTransformer, error) {
@@ -33,30 +34,37 @@ type androidimpl struct {
 	iconSpecDict android.AndroidIconSpecDictionary
 }
 
-func (i *androidimpl) TransformAsset(filename string, name string, options ...*AndroidTransformOption) ([]string, error) {
+type workflowOpt struct {
+	opt     TransformOption
+	rootDir string
+	dpi     android.AssetDPI
+}
+
+func (i *androidimpl) TransformAsset(filename string, name string, options ...*AndroidTransformOption) (map[android.AssetDPI]string, error) {
 	opts, err := i.validateOptions(name, options)
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("opts: %v", opts)
 
 	at, err := NewAssetTransformer()
 	if err != nil {
 		return nil, err
 	}
 
-	var paths []string
+	var paths map[android.AssetDPI]string = make(map[android.AssetDPI]string)
 
-	for dir, opt := range opts {
-		err = i.ensureRootDir(dir)
+	for _, wopt := range opts {
+		err = i.ensureRootDir(wopt.rootDir)
 		if err != nil {
 			return nil, err
 		}
 
-		path, err := at.Transform(filename, opt)
+		path, err := at.Transform(filename, &wopt.opt)
 		if err != nil {
 			return nil, err
 		}
-		paths = append(paths, *path)
+		paths[wopt.dpi] = *path
 	}
 
 	return paths, nil
@@ -72,25 +80,25 @@ func (i *androidimpl) ensureRootDir(dirPath string) error {
 	return nil
 }
 
-func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOption) (map[string]*TransformOption, error) {
+func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOption) ([]*workflowOpt, error) {
 	if len(options) == 0 {
 		return nil, errors.New("no options")
 	}
 
 	src := options[0]
 	spec := i.iconSpecDict[src.IconType]
-	var opts map[string]*TransformOption = make(map[string]*TransformOption)
+	var opts []*workflowOpt
 
 	for _, dpi := range i.dpiList {
 		density := i.dpiDict[dpi]
 		path := fmt.Sprintf("%s/%s", i.workDir, density.ResPath)
 		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, name, src.Format)
-		opt := &TransformOption{
+		opt := TransformOption{
 			Size:    AssetSize{density.Width, density.Height},
 			Format:  src.Format,
 			Outfile: filename,
 		}
-		opts[path] = opt
+		opts = append(opts, &workflowOpt{opt: opt, rootDir: path, dpi: dpi})
 	}
 
 	return opts, nil
