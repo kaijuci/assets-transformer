@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/kaijuci/assets-transformer/vars"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +20,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	// Add commands here
-	log.Printf("version: %s\n", vars.Version)
+	rootCmd.AddCommand(versionCmd)
 }
 
 func Execute() {
