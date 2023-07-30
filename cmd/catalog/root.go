@@ -21,8 +21,9 @@ var rootCmd = &cobra.Command{
 func init() {
 	// Add commands here
 	versionCmd := NewVersionCmd()
+	androidCmd := NewAndroidCmd()
 
-	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(versionCmd, androidCmd)
 }
 
 func Execute() {
