@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	transformer "github.com/kaijuci/transformer"
+	"github.com/kaijuci/transformer"
 	"github.com/kaijuci/transformer/android"
 )
 
