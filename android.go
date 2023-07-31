@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kaijuci/assets-transformer/android"
+	"github.com/kaijuci/transformer/android"
 )
 
 type AndroidTransformOption struct {

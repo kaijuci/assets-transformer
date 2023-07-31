@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/kaijuci/assets-transformer/cmd/catalog/android"
+	"github.com/kaijuci/transformer/cmd/catalog/android"
 	"github.com/spf13/cobra"
 )
 
