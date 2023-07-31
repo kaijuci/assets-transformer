@@ -30,7 +30,7 @@ const (
 	`
 )
 
-type androidAssetWorkFn func(inputFilename, outputDir, assetName string) ([]*string, error)
+type androidAssetWorkFn func(inputFilename, outputDir, assetName, format string) ([]*string, error)
 
 type androidWork struct {
 	mapFn         map[string]androidAssetWorkFn
@@ -38,9 +38,10 @@ type androidWork struct {
 	outputDir     string
 	assetName     string
 	types         []string
+	format        string
 }
 
-func newAndroidAssetWork(inputFilename, outputDir, assetName, types string) *androidWork {
+func newAndroidAssetWork(inputFilename, outputDir, assetName, types, format string) *androidWork {
 	return &androidWork{
 		mapFn: map[string]androidAssetWorkFn{
 			"launcher": handleLauncherAssetType,
@@ -50,6 +51,7 @@ func newAndroidAssetWork(inputFilename, outputDir, assetName, types string) *and
 		outputDir:     outputDir,
 		assetName:     assetName,
 		types:         strings.Split(types, ","),
+		format:        format,
 	}
 }
 
@@ -60,7 +62,7 @@ func (w *androidWork) doWork() ([]*string, error) {
 		if !ok {
 			return nil, errors.New(ErrInvalidAssetType)
 		}
-		paths, err := fn(w.inputFilename, w.outputDir, w.assetName)
+		paths, err := fn(w.inputFilename, w.outputDir, w.assetName, w.format)
 		if err != nil {
 			return nil, err
 		}
@@ -71,7 +73,7 @@ func (w *androidWork) doWork() ([]*string, error) {
 	return result, nil
 }
 
-func handleLauncherAssetType(inputFilename, outputDir, assetName string) ([]*string, error) {
+func handleLauncherAssetType(inputFilename, outputDir, assetName, format string) ([]*string, error) {
 	at, err := transformer.NewAndroidAssetTransformer(outputDir)
 	if err != nil {
 		return nil, err
@@ -79,7 +81,7 @@ func handleLauncherAssetType(inputFilename, outputDir, assetName string) ([]*str
 
 	opt := transformer.AndroidTransformOption{
 		IconType: android.AndroidIconTypeLauncher,
-		Format:   transformer.PNG,
+		Format:   transformer.AssetFormat(strings.ToLower(format)),
 	}
 
 	gen, err := at.TransformAsset(inputFilename, assetName, &opt)
@@ -96,6 +98,6 @@ func handleLauncherAssetType(inputFilename, outputDir, assetName string) ([]*str
 	return result, nil
 }
 
-func handleAllAssetTypes(inputFilename, outputDir, assetName string) ([]*string, error) {
+func handleAllAssetTypes(inputFilename, outputDir, assetName, format string) ([]*string, error) {
 	return nil, errors.New("not implemented")
 }

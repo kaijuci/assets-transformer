@@ -18,8 +18,9 @@ func NewAndroidCmd() *cobra.Command {
 			outputDir := cmd.Flag("output").Value.String()
 			assetName := cmd.Flag("name").Value.String()
 			types := cmd.Flag("types").Value.String()
+			format := cmd.Flag("format").Value.String()
 
-			w := newAndroidAssetWork(inputFilename, outputDir, assetName, types)
+			w := newAndroidAssetWork(inputFilename, outputDir, assetName, types, format)
 			destDir, err := w.doWork()
 			if err != nil {
 				log.Panicf("error: %v\n", err)
