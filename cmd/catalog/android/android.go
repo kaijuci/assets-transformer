@@ -3,6 +3,9 @@ package android
 import (
 	"errors"
 	"strings"
+
+	transformer "github.com/kaijuci/assets-transformer"
+	"github.com/kaijuci/assets-transformer/android"
 )
 
 const (
@@ -27,7 +30,7 @@ const (
 	`
 )
 
-type androidAssetWorkFn func(inputFilename, outputDir, assetName string) (*string, error)
+type androidAssetWorkFn func(inputFilename, outputDir, assetName string) ([]*string, error)
 
 type androidWork struct {
 	mapFn         map[string]androidAssetWorkFn
@@ -50,14 +53,49 @@ func newAndroidAssetWork(inputFilename, outputDir, assetName, types string) *and
 	}
 }
 
-func (w *androidWork) doWork() (*string, error) {
-	return nil, errors.New("not implemented")
+func (w *androidWork) doWork() ([]*string, error) {
+	var result []*string
+	for _, t := range w.types {
+		fn, ok := w.mapFn[t]
+		if !ok {
+			return nil, errors.New(ErrInvalidAssetType)
+		}
+		paths, err := fn(w.inputFilename, w.outputDir, w.assetName)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, paths...)
+	}
+
+	return result, nil
 }
 
-func handleLauncherAssetType(inputFilename, outputDir, assetName string) (*string, error) {
-	return nil, errors.New("not implemented")
+func handleLauncherAssetType(inputFilename, outputDir, assetName string) ([]*string, error) {
+	at, err := transformer.NewAndroidAssetTransformer(outputDir)
+	if err != nil {
+		return nil, err
+	}
+
+	opt := transformer.AndroidTransformOption{
+		IconType: android.AndroidIconTypeLauncher,
+		Format:   transformer.PNG,
+	}
+
+	gen, err := at.TransformAsset(inputFilename, assetName, &opt)
+	if err != nil {
+		return nil, err
+	}
+
+	result := []*string{}
+	for _, v := range gen {
+		path := v
+		result = append(result, &path)
+	}
+
+	return result, nil
 }
 
-func handleAllAssetTypes(inputFilename, outputDir, assetName string) (*string, error) {
+func handleAllAssetTypes(inputFilename, outputDir, assetName string) ([]*string, error) {
 	return nil, errors.New("not implemented")
 }

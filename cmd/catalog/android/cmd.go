@@ -1,6 +1,7 @@
 package android
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -23,9 +24,13 @@ func NewAndroidCmd() *cobra.Command {
 			if err != nil {
 				log.Panicf("error: %v\n", err)
 			}
-			_, err = os.Stdout.WriteString(*destDir)
-			if err != nil {
-				log.Panicf("error: %v\n", err)
+
+			for _, d := range destDir {
+				_, err = os.Stdout.WriteString(fmt.Sprintf("%s\n", *d))
+
+				if err != nil {
+					log.Panicf("error: %v\n", err)
+				}
 			}
 		},
 	}
