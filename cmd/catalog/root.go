@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/kaijuci/assets-transformer/cmd/catalog/android"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,6 @@ var rootCmd = &cobra.Command{
 	Use:   "xfrmr",
 	Short: "Transforms image files into properly named and sized Android assets",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
 		if len(args) == 0 {
 			cmd.Help()
 		}
@@ -19,8 +19,10 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	// Add commands here
-	rootCmd.AddCommand(versionCmd)
+	versionCmd := NewVersionCmd()
+	androidCmd := android.NewAndroidCmd()
+
+	rootCmd.AddCommand(versionCmd, androidCmd)
 }
 
 func Execute() {
