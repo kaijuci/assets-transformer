@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/kaijuci/assets-transformer/cmd/catalog/android"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +20,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	versionCmd := NewVersionCmd()
-	androidCmd := NewAndroidCmd()
+	androidCmd := android.NewAndroidCmd()
 
 	rootCmd.AddCommand(versionCmd, androidCmd)
 }
