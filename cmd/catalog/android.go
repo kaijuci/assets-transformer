@@ -30,15 +30,28 @@ func NewAndroidCmd() *cobra.Command {
 		Short: "Android asset transformer",
 		Long:  _androidDescription,
 		Run: func(cmd *cobra.Command, args []string) {
-			log.Println("do the dew")
+			inputFilename := cmd.Flag("input").Value.String()
+			outputDir := cmd.Flag("output").Value.String()
+			assetName := cmd.Flag("name").Value.String()
+			types, err := cmd.Flags().GetStringArray("types")
+			if err != nil {
+				log.Fatalf("error: %v\n", err)
+			}
+			doAndroidAssetWork(inputFilename, outputDir, assetName, types)
 		},
 	}
 
-	cmd.Flags().StringArrayP("types", "t", []string{}, "Asset types to transform. Available: launcher, notification, dialog, tab, toolbar, all")
+	cmd.Flags().StringArrayP("types", "t", []string{"all"}, "Asset types to transform. Available: launcher, notification, dialog, tab, toolbar, all")
 	cmd.Flags().StringP("input", "i", "", "Input image file, can be any format one of PNG, GIF, JPEG, or WEBP")
-	cmd.Flags().StringP("format", "f", "", "Output format for transformed assets. Available: PNG, GIF, JPEG, WEBP")
-	cmd.Flags().StringP("output", "o", "", "Output directory for transformed assets")
-	cmd.Flags().StringP("name", "n", "", "Name for transformed assets e.g. app_icon, notification_icon, etc.")
+	cmd.Flags().StringP("format", "f", "WEBP", "Output format for transformed assets. Available: PNG, GIF, JPEG, WEBP")
+	cmd.Flags().StringP("output", "o", "/tmp", "Output directory for transformed assets")
+	cmd.Flags().StringP("name", "n", "app_icon", "Name for transformed assets e.g. app_icon, notification_icon, etc.")
+
+	cmd.MarkFlagRequired("input")
 
 	return cmd
+}
+
+func doAndroidAssetWork(inputFilename, outputDir, assetName string, types []string) {
+	log.Printf("inputFilename: %s outputDir: %s assetName: %s types: %s", inputFilename, outputDir, assetName, types)
 }
