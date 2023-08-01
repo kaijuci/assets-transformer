@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	transformer "github.com/kaijuci/assets-transformer"
-	"github.com/kaijuci/assets-transformer/android"
+	"github.com/kaijuci/transformer"
+	"github.com/kaijuci/transformer/android"
 )
 
 const (

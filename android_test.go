@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kaijuci/assets-transformer/android"
+	"github.com/kaijuci/transformer/android"
 )
 
 const rollerSkatePNG = "testdata/roller-skate.png"

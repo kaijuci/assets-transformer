@@ -3,7 +3,7 @@ package catalog
 import (
 	"log"
 
-	"github.com/kaijuci/assets-transformer/vars"
+	"github.com/kaijuci/transformer/vars"
 	"github.com/spf13/cobra"
 )
 

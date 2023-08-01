@@ -1,6 +1,6 @@
 package main
 
-import "github.com/kaijuci/assets-transformer/cmd/catalog"
+import "github.com/kaijuci/transformer/cmd/catalog"
 
 func main() {
 	catalog.Execute()

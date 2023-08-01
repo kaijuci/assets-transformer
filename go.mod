@@ -1,4 +1,4 @@
-module github.com/kaijuci/assets-transformer
+module github.com/kaijuci/transformer
 
 go 1.20
 
