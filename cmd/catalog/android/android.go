@@ -11,24 +11,6 @@ const (
 	ErrInvalidAssetType = "invalid asset type"
 )
 
-const (
-	_androidDescription string = `
-	Transforms input image file into properly named and sized Android assets. It uses the input file format for the generated asset files.
-	Optionally, the target format can be specified with the --format flag. Available formats are PNG, GIF, JPEG, and WEBP.
-
-	Examples:
-	- xfrmr android -i /tmp/LauncherIcon.png -n app_icon -o /tmp/iconJob/res -t launcher -f WEBP
-
-	  result:
-	        /tmp/iconJob/res/drawable-ldpi/ic_launcher_app_icon.webp
-	        /tmp/iconJob/res/drawable-mdpi/ic_launcher_app_icon.webp
-	        /tmp/iconJob/res/drawable-hdpi/ic_launcher_app_icon.webp
-	        /tmp/iconJob/res/drawable-xhdpi/ic_launcher_app_icon.webp
-	        /tmp/iconJob/res/drawable-xxhdpi/ic_launcher_app_icon.webp
-	        /tmp/iconJob/res/drawable-xxxhdpi/ic_launcher_app_icon.webp
-	`
-)
-
 type androidWork struct {
 	inputFilename string
 	outputDir     string
