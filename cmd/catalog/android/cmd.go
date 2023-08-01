@@ -13,6 +13,16 @@ const (
 	Transforms input image file into properly named and sized Android assets. It uses the input file format for the generated asset files.
 	Optionally, the target format can be specified with the --format flag. Available formats are PNG, GIF, JPEG, and WEBP.
 
+	Supported android icon types:
+		- launcher
+		- action
+		- tab
+		- menu
+		- dialog
+		- statusbar
+		- toolbar
+		- notification
+
 	Examples:
 	- xfrmr android -i /tmp/LauncherIcon.png -n app_icon -o /tmp/iconJob/res -t launcher -f WEBP
 
