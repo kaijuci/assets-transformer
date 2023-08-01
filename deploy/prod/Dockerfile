@@ -11,6 +11,8 @@ FROM base AS go-build
 
 COPY . .
 
+# todo: build statically linked binary w/ imagemagick
+
 # build
 RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     CGO_ENABLED=1 \
@@ -18,7 +20,7 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOARCH=amd64 \
     GO111MODULE=on \
     go build \
-    -ldflags "-X github.com/kaijuci/assets-transformer/vars.Version=$(git rev-parse --short HEAD)" \
+    -ldflags "-X github.com/kaijuci/transformer/vars.Version=$(git rev-parse --short HEAD)" \
     -o xfrmr \
     cmd/main.go
 
@@ -26,6 +28,5 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
 RUN /app/xfrmr version
 
 # todo: add another stage and copy built executable from go-build to that stage
-# todo: tried it with scratch but failed on COPY across stages
 
 CMD ["/app/xfrmr"]

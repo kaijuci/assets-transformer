@@ -25,7 +25,7 @@ RUN CGO_CFLAGS_ALLOW='-Xpreprocessor' \
     GOARCH=amd64 \
     GO111MODULE=on \
     go build \
-    -ldflags "-X github.com/kaijuci/assets-transformer/vars.Version=$(git rev-parse --short HEAD)" \
+    -ldflags "-X github.com/kaijuci/transformer/vars.Version=$(git rev-parse --short HEAD)" \
     -o xfrmr \
     cmd/main.go
 
