@@ -2,8 +2,8 @@ FROM golang:1.20-alpine
 
 RUN apk add g++ gcc imagemagick-dev
 
-ARG VERSION
-ENV VERSION=$VERSION
+ARG BUILD_VERSION
+ENV VERSION=$BUILD_VERSION
 
 WORKDIR /app
 ADD . .

@@ -24,7 +24,7 @@ docker push kaijuci/gomagick:2.0
 To build prod:
 
 ```bash
-docker build -t xfrmr:<tag> --build-arg VERSION=`git rev-parse --short HEAD` -f deploy/prod/Dockerfile .
+docker build -t xfrmr:<tag> --build-arg BUILD_VERSION=`git rev-parse --short HEAD` -f deploy/prod/Dockerfile .
 ```
 
 # Plan
