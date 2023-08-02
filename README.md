@@ -27,6 +27,12 @@ To build prod:
 docker build -t xfrmr:<tag> --build-arg BUILD_VERSION=`git rev-parse --short HEAD` -f deploy/prod/Dockerfile .
 ```
 
+To transform assets with docker:
+
+```bash
+docker run -v $HOME/output/toucan:/tmp/toucan -v `pwd`/testdata:/tmp/input -ti xfrmr:<tag> /app/xfrmr android -i /tmp/input/toucan.png -o /tmp/toucan -f webp -t launcher -n toucan
+```
+
 # Plan
 
 Refer to [plan.md](plan.md) for the planned tasks and ongoing progress.
