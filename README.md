@@ -21,6 +21,12 @@ docker tag a32623302329 kaijuci/gomagick:2.0
 docker push kaijuci/gomagick:2.0
 ```
 
+To build prod:
+
+```bash
+docker build -t xfrmr:<tag> --build-arg VERSION=`git rev-parse --short HEAD` -f deploy/prod/Dockerfile .
+```
+
 # Plan
 
 Refer to [plan.md](plan.md) for the planned tasks and ongoing progress.
