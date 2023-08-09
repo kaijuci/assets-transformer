@@ -1,0 +1,78 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: android-assets
+  labels:
+    app.kubernetes.io/version: "0.9"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.38.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "git clone"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    This task operates on an image file and generates the corresponding assets for an Android app for all densities.
+
+  workspaces:
+    - name: source
+      description: The directory where the input file is stored.
+    - name: output
+      description: The directory where the output files will be stored.
+
+  params:
+    - name: input
+      type: string
+      description: The path to input image file in the source workspace.
+
+    - name: format
+      type: string
+      default: png
+      description: The format of the input image file. Default is png.
+
+    - name: type
+      type: string
+      default: launcher
+      description: The type of the asset. Default is launcher.
+
+    - name: name
+      type: string
+      default: app
+      description: The name of the asset. Default is app.
+
+    - name: image-name
+      type: string
+      default: "kaijuci/kaiju-asset-xfrmr:b754649"
+      description: The base image name to use for the task. Default is kaijuci/kaiju-asset-xfrmr:b754649.
+
+  results:
+    - name: assets
+      description: The list of generated assets.
+
+  steps:
+    - name: xfrmr
+      image: $(params.image-name)
+      workingDir: $(workspaces.source.path)
+      args:
+        - android
+        - -i
+        - $(workspaces.source.path)/$(params.input)
+        - -o
+        - $(workspaces.output.path)
+        - -f
+        - $(params.format)
+        - -t
+        - $(params.type)
+        - -n
+        - $(params.name)
+    - name: result
+      image: python:3.9.17-alpine
+      args:
+        - $(workspaces.output.path)
+      script: |
+        #!/usr/bin/env python3
+
+        import sys
+
+        with open("/tekton/results/assets", "w") as f:
+          f.write(" ".join(os.listdir(sys.argv[1])))
