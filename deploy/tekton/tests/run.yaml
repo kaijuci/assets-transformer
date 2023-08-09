@@ -36,14 +36,14 @@ spec:
         - name: format
           value: webp
         - name: type
-          value: notification
+          value: dialog
         - name: name
-          value: notif
+          value: friend_request
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: xfrmr-test-pipeline-run
+  name: xfrmr-test-pipeline-run-4
 spec:
   pipelineRef:
     name: xfrmr-test-pipeline

@@ -25,6 +25,11 @@ spec:
       type: string
       description: The path to input image file in the source workspace.
 
+    - name: res-dir
+      type: string
+      default: app/src/main/res
+      description: The name of the directory where the assets will be stored. Default is res.
+
     - name: format
       type: string
       default: png
@@ -58,7 +63,7 @@ spec:
         - -i
         - $(workspaces.source.path)/$(params.input)
         - -o
-        - $(workspaces.output.path)
+        - $(workspaces.output.path)/$(params.res-dir)
         - -f
         - $(params.format)
         - -t
@@ -72,6 +77,7 @@ spec:
       script: |
         #!/usr/bin/env python3
 
+        import os
         import sys
 
         with open("/tekton/results/assets", "w") as f:
