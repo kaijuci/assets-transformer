@@ -1,0 +1,63 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: xfrmr-test-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: https://github.com/kaijuci/assets-transformer
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+    - name: run-xfrmr
+      taskRef:
+        name: android-assets
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: input
+          value: testdata/roller-skate.png
+        - name: format
+          value: webp
+        - name: type
+          value: dialog
+        - name: name
+          value: friend_request
+    - name: display-results
+      runAfter:
+        - run-xfrmr
+      taskSpec:
+        steps:
+          - name: display-xfrmr-results
+            image: ubuntu
+            script: |
+              echo "result: $(tasks.run-xfrmr.results.assets)"
+              ls -lR $(workspaces.shared-workspace.path)/app/src/main/res
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: xfrmr-test-pipeline-run-13
+spec:
+  pipelineRef:
+    name: xfrmr-test-pipeline
+  workspaces:
+    - name: shared-workspace
+      persistentvolumeclaim:
+        claimName: xfrmr-source-pvc
