@@ -6,9 +6,9 @@ metadata:
     app.kubernetes.io/version: "0.9"
   annotations:
     tekton.dev/pipelines.minVersion: "0.38.0"
-    tekton.dev/categories: Git
-    tekton.dev/tags: git
-    tekton.dev/displayName: "git clone"
+    tekton.dev/categories: Android
+    tekton.dev/tags: android
+    tekton.dev/displayName: "Kaiju Android Assets Transformer"
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
@@ -51,13 +51,14 @@ spec:
       description: The base image name to use for the task. Default is kaijuci/kaiju-asset-xfrmr:b754649.
 
   results:
-    - name: assets
-      description: The list of generated assets.
+    - name: report
+      description: The JSON report of generated assets.
 
   steps:
-    - name: xfrmr
+    - name: generate-assets
       image: $(params.image-name)
       workingDir: $(workspaces.source.path)
+      onError: continue
       args:
         - android
         - -i
@@ -70,15 +71,24 @@ spec:
         - $(params.type)
         - -n
         - $(params.name)
-    - name: result
+
+    - name: write-result
       image: python:3.9.17-alpine
       args:
-        - $(workspaces.output.path)
+        - $(workspaces.output.path)/$(params.res-dir)
       script: |
         #!/usr/bin/env python3
 
+        import json
         import os
         import sys
 
-        with open("/tekton/results/assets", "w") as f:
-          f.write(" ".join(os.listdir(sys.argv[1])))
+        outdir = sys.argv[1]
+        files = os.listdir(outdir)
+
+        report = {
+          'files': files,
+        }
+
+        with open("/tekton/results/report", "w") as f:
+          f.write(json.dumps(report))

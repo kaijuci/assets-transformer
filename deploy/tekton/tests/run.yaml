@@ -39,11 +39,21 @@ spec:
           value: dialog
         - name: name
           value: friend_request
+    - name: display-results
+      runAfter:
+        - run-xfrmr
+      taskSpec:
+        steps:
+          - name: display-xfrmr-results
+            image: ubuntu
+            script: |
+              echo "result: $(tasks.run-xfrmr.results.assets)"
+              ls -lR $(workspaces.shared-workspace.path)/app/src/main/res
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: xfrmr-test-pipeline-run-4
+  name: xfrmr-test-pipeline-run-13
 spec:
   pipelineRef:
     name: xfrmr-test-pipeline
