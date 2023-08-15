@@ -11,27 +11,34 @@ const (
 	ErrInvalidAssetType = "invalid asset type"
 )
 
+type AndroidTransformOpts struct {
+	InputFilename string
+	OutputDir     string
+	AssetName     string
+	IconTypes     []android.AndroidIconType
+	Format        transformer.AssetFormat
+}
+type AndroidTransformResult struct {
+	InputFilename string `json:"input_filename"`
+}
 type androidWork struct {
-	inputFilename string
-	outputDir     string
-	assetName     string
-	iconTypes     []android.AndroidIconType
-	format        transformer.AssetFormat
+	AndroidTransformOpts
 }
 
 func newAndroidAssetWork(inputFilename, outputDir, assetName, types, format string) *androidWork {
 	return &androidWork{
-		inputFilename: inputFilename,
-		outputDir:     outputDir,
-		assetName:     assetName,
-		iconTypes:     resolveIconTypes(strings.Split(types, ",")),
-		format:        transformer.AssetFormat(strings.ToLower(format)),
+		AndroidTransformOpts{InputFilename: inputFilename,
+			OutputDir: outputDir,
+			AssetName: assetName,
+			IconTypes: resolveIconTypes(strings.Split(types, ",")),
+			Format:    transformer.AssetFormat(strings.ToLower(format)),
+		},
 	}
 }
 
 func (w *androidWork) doWork() ([]*string, error) {
 	var result []*string
-	for _, t := range w.iconTypes {
+	for _, t := range w.IconTypes {
 		paths, err := w.transform(t)
 		if err != nil {
 			return nil, err
@@ -54,7 +61,7 @@ func resolveIconTypes(types []string) []android.AndroidIconType {
 }
 
 func (w *androidWork) transform(iconType android.AndroidIconType) ([]*string, error) {
-	at, err := transformer.NewAndroidAssetTransformer(w.outputDir)
+	at, err := transformer.NewAndroidAssetTransformer(w.OutputDir)
 	if err != nil {
 		return nil, err
 	}
@@ -63,10 +70,10 @@ func (w *androidWork) transform(iconType android.AndroidIconType) ([]*string, er
 
 	opt := transformer.AndroidTransformOption{
 		IconType: iconType,
-		Format:   w.format,
+		Format:   w.Format,
 	}
 
-	gen, err := at.TransformAsset(w.inputFilename, w.assetName, &opt)
+	gen, err := at.TransformAsset(w.InputFilename, w.AssetName, &opt)
 	if err != nil {
 		return nil, err
 	}
