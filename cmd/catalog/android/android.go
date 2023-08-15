@@ -10,16 +10,18 @@ const (
 )
 
 type AndroidTransformOpts struct {
-	InputFilename string
-	OutputDir     string
-	AssetName     string
-	IconTypes     []android.AndroidIconType
-	Format        transformer.AssetFormat
+	InputFilename string                    `json:"filename"`
+	OutputDir     string                    `json:"res_dir"`
+	AssetName     string                    `json:"asset_name"`
+	IconTypes     []android.AndroidIconType `json:"icon_types"`
+	Format        transformer.AssetFormat   `json:"-"`
 }
 
 type AndroidTransformResult struct {
-	AndroidTransformOpts
-	GeneratedPaths map[android.AndroidIconType][]*string
+	AndroidTransformOpts `json:"input"`
+	AssetInfo            *transformer.AssetInfo                `json:"asset_info"`
+	OutputFormat         string                                `json:"output_format"`
+	GeneratedPaths       map[android.AndroidIconType][]*string `json:"generated"`
 }
 
 type androidWork struct {
@@ -31,6 +33,11 @@ func newAndroidAssetWork(opts *AndroidTransformOpts) *androidWork {
 }
 
 func (w *androidWork) doWork() (*AndroidTransformResult, error) {
+	info, err := transformer.GetImageInfo(w.InputFilename)
+	if err != nil {
+		return nil, err
+	}
+
 	generated := map[android.AndroidIconType][]*string{}
 	for _, iconType := range w.IconTypes {
 		paths, err := w.transform(iconType)
@@ -40,7 +47,7 @@ func (w *androidWork) doWork() (*AndroidTransformResult, error) {
 		generated[iconType] = paths
 	}
 
-	return &AndroidTransformResult{w.AndroidTransformOpts, generated}, nil
+	return &AndroidTransformResult{w.AndroidTransformOpts, info, string(w.AndroidTransformOpts.Format), generated}, nil
 }
 
 func resolveIconTypes(types []string) []android.AndroidIconType {
