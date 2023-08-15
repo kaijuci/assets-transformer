@@ -11,11 +11,31 @@ type AssetTransformer interface {
 	Transform(string, ...*TransformOption) (*string, error)
 }
 
+type AssetInfo struct {
+	Filename string `json:"filename"`
+	Width    uint   `json:"width"`
+	Height   uint   `json:"height"`
+	Format   string `json:"format"`
+}
+
 func NewAssetTransformer() (AssetTransformer, error) {
 	return &impl{}, nil
 }
 
 type impl struct{}
+
+func GetImageInfo(asset string) (*AssetInfo, error) {
+	imagick.Initialize()
+	defer imagick.Terminate()
+
+	wand := imagick.NewMagickWand()
+	err := wand.PingImage(asset)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AssetInfo{Filename: asset, Width: wand.GetImageWidth(), Height: wand.GetImageHeight(), Format: wand.GetImageFormat()}, nil
+}
 
 func (i *impl) Transform(asset string, options ...*TransformOption) (*string, error) {
 	opt, err := i.validateOptions(options)

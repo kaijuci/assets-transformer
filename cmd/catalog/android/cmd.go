@@ -1,10 +1,13 @@
 package android
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/kaijuci/transformer"
 	"github.com/spf13/cobra"
 )
 
@@ -48,18 +51,21 @@ func NewAndroidCmd() *cobra.Command {
 			types := cmd.Flag("types").Value.String()
 			format := cmd.Flag("format").Value.String()
 
-			w := newAndroidAssetWork(inputFilename, outputDir, assetName, types, format)
-			destDir, err := w.doWork()
+			iconTypes := resolveIconTypes(strings.Split(types, ","))
+			w := newAndroidAssetWork(&AndroidTransformOpts{inputFilename, outputDir, assetName, iconTypes, transformer.AssetFormat(format)})
+			result, err := w.doWork()
 			if err != nil {
 				log.Panicf("error: %v\n", err)
 			}
 
-			for _, d := range destDir {
-				_, err = os.Stdout.WriteString(fmt.Sprintf("%s\n", *d))
+			b, err := json.Marshal(*result)
+			if err != nil {
+				log.Panicf("error: %v\n", err)
+			}
+			_, err = os.Stdout.WriteString(fmt.Sprintf("%s\n", string(b)))
 
-				if err != nil {
-					log.Panicf("error: %v\n", err)
-				}
+			if err != nil {
+				log.Panicf("error: %v\n", err)
 			}
 		},
 	}
