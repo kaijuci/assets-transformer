@@ -541,6 +541,21 @@ func TestWEBPtoGIFConversion(t *testing.T) {
 	t.Logf("Result: %s size: %dx%d format: %s", *result, size.Width, size.Height, *format)
 }
 
+func TestImageInfo(t *testing.T) {
+	want := AssetInfo{Width: 512, Height: 512, Format: "PNG"}
+
+	got, err := GetImageInfo(facePNG)
+	if err != nil {
+		t.Fatalf("error getting image info: %v", err)
+	}
+
+	if got.Width != want.Width || got.Height != want.Height || got.Format != want.Format {
+		t.Fatalf("incorrect asset info got: %v want: %v", got, want)
+	}
+
+	t.Logf("asset: %s info: %v", facePNG, got)
+}
+
 func getImageSizeAndFormat(filename string) (*AssetSize, *AssetFormat, error) {
 	reader, err := os.Open(filename)
 	if err != nil {
