@@ -1,8 +1,6 @@
 package android
 
 import (
-	"strings"
-
 	"github.com/kaijuci/transformer"
 	"github.com/kaijuci/transformer/android"
 )
@@ -18,36 +16,31 @@ type AndroidTransformOpts struct {
 	IconTypes     []android.AndroidIconType
 	Format        transformer.AssetFormat
 }
+
 type AndroidTransformResult struct {
-	InputFilename string `json:"input_filename"`
+	AndroidTransformOpts
+	GeneratedPaths map[android.AndroidIconType][]*string
 }
+
 type androidWork struct {
 	AndroidTransformOpts
 }
 
-func newAndroidAssetWork(inputFilename, outputDir, assetName, types, format string) *androidWork {
-	return &androidWork{
-		AndroidTransformOpts{InputFilename: inputFilename,
-			OutputDir: outputDir,
-			AssetName: assetName,
-			IconTypes: resolveIconTypes(strings.Split(types, ",")),
-			Format:    transformer.AssetFormat(strings.ToLower(format)),
-		},
-	}
+func newAndroidAssetWork(opts *AndroidTransformOpts) *androidWork {
+	return &androidWork{*opts}
 }
 
-func (w *androidWork) doWork() ([]*string, error) {
-	var result []*string
-	for _, t := range w.IconTypes {
-		paths, err := w.transform(t)
+func (w *androidWork) doWork() (*AndroidTransformResult, error) {
+	generated := map[android.AndroidIconType][]*string{}
+	for _, iconType := range w.IconTypes {
+		paths, err := w.transform(iconType)
 		if err != nil {
 			return nil, err
 		}
-
-		result = append(result, paths...)
+		generated[iconType] = paths
 	}
 
-	return result, nil
+	return &AndroidTransformResult{w.AndroidTransformOpts, generated}, nil
 }
 
 func resolveIconTypes(types []string) []android.AndroidIconType {
