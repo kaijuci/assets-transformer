@@ -2,7 +2,6 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: xfrmr-test-pipeline
-  namespace: kaiju-pipelines
 spec:
   workspaces:
     - name: shared-workspace
@@ -53,7 +52,6 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: xfrmr-test-pipeline-run-42
-  namespace: kaiju-pipelines
 spec:
   pipelineRef:
     name: xfrmr-test-pipeline
