@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: xfrmr-source-pvc
+  namespace: kaiju-pipelines
 spec:
   accessModes:
     - ReadWriteOnce

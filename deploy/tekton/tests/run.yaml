@@ -1,8 +1,8 @@
----
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: xfrmr-test-pipeline
+  namespace: kaiju-pipelines
 spec:
   workspaces:
     - name: shared-workspace
@@ -36,24 +36,24 @@ spec:
         - name: format
           value: webp
         - name: type
-          value: dialog
+          value: dialog,launcher
         - name: name
           value: friend_request
-    - name: display-results
+    - name: display-report
       runAfter:
         - run-xfrmr
       taskSpec:
         steps:
-          - name: display-xfrmr-results
+          - name: display-xfrmr-report
             image: ubuntu
             script: |
-              echo "result: $(tasks.run-xfrmr.results.assets)"
-              ls -lR $(workspaces.shared-workspace.path)/app/src/main/res
+              cat $(workspaces.shared-workspace.path)/report.json
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: xfrmr-test-pipeline-run-13
+  name: xfrmr-test-pipeline-run-42
+  namespace: kaiju-pipelines
 spec:
   pipelineRef:
     name: xfrmr-test-pipeline
