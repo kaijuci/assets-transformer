@@ -47,7 +47,7 @@ spec:
 
     - name: image-name
       type: string
-      default: "kaijuci/kaiju-asset-xfrmr:b754649"
+      default: "kaijuci/kaiju-asset-xfrmr:bcaab42"
       description: The base image name to use for the task. Default is kaijuci/kaiju-asset-xfrmr:b754649.
 
   results:
@@ -58,7 +58,8 @@ spec:
     - name: generate-assets
       image: $(params.image-name)
       workingDir: $(workspaces.source.path)
-      onError: continue
+      stdoutConfig:
+        path: "$(workspaces.output.path)/report.json"
       args:
         - android
         - -i
@@ -75,20 +76,17 @@ spec:
     - name: write-result
       image: python:3.9.17-alpine
       args:
-        - $(workspaces.output.path)/$(params.res-dir)
+        - "$(workspaces.output.path)/report.json"
       script: |
         #!/usr/bin/env python3
 
-        import json
-        import os
         import sys
 
-        outdir = sys.argv[1]
-        files = os.listdir(outdir)
+        reportFile = sys.argv[1]
 
-        report = {
-          'files': files,
-        }
+        contents = ""
+        with open(reportFile, "r") as f:
+          contents = f.read()
 
-        with open("/tekton/results/report", "w") as f:
-          f.write(json.dumps(report))
+        with open("/tekton/results/report", "w") as outfile:
+          outfile.write("%s" % contents)
