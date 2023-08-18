@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/kaijuci/transformer/android"
 )
@@ -109,7 +110,8 @@ func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOp
 		density := i.dpiDict[dpi]
 		pixels := density.CalculateDimension(spec.DPI)
 		path := fmt.Sprintf("%s/%s", i.workDir, density.ResPath)
-		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, name, src.Format)
+		// todo: sanitize `name` for android resource filename compliance
+		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, strings.ToLower(name), src.Format)
 		opt := TransformOption{
 			Size:    AssetSize{Width: pixels, Height: pixels},
 			Format:  src.Format,
