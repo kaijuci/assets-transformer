@@ -32,7 +32,8 @@ func TestLauncherIconPNG(t *testing.T) {
 
 	dpiDict := android.NewAndroidAssetDensityDictionary()
 
-	for dpi, file := range gen {
+	for dpi, g := range gen {
+		file := g.GeneratedPath
 		size, format, err := getImageSizeAndFormat(file)
 		if err != nil {
 			t.Fatalf("failed to get image size and format: %v", err)
@@ -73,7 +74,8 @@ func TestLauncherIconWEBP(t *testing.T) {
 
 	dpiDict := android.NewAndroidAssetDensityDictionary()
 
-	for dpi, file := range gen {
+	for dpi, g := range gen {
+		file := g.GeneratedPath
 		size, format, err := getImageSizeAndFormat(file)
 		if err != nil {
 			t.Fatalf("failed to get image size and format: %v", err)
@@ -114,7 +116,8 @@ func TestNotificationIconWEBP(t *testing.T) {
 
 	dpiDict := android.NewAndroidAssetDensityDictionary()
 
-	for dpi, file := range gen {
+	for dpi, generated := range gen {
+		file := generated.GeneratedPath
 		size, format, err := getImageSizeAndFormat(file)
 		if err != nil {
 			t.Fatalf("failed to get image size and format: %v", err)

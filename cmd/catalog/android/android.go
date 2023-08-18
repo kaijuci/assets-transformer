@@ -24,9 +24,9 @@ type AndroidDPIPath struct {
 
 type AndroidTransformResult struct {
 	AndroidTransformOpts `json:"input"`
-	AssetInfo            *transformer.AssetInfo `json:"asset_info"`
-	OutputFormat         string                 `json:"output_format"`
-	Generated            []AndroidDPIPath       `json:"generated"`
+	AssetInfo            *transformer.AssetInfo                                          `json:"asset_info"`
+	OutputFormat         string                                                          `json:"output_format"`
+	Generated            map[android.AndroidIconType][]transformer.AndroidGeneratedAsset `json:"generated"`
 }
 
 type androidWork struct {
@@ -43,13 +43,18 @@ func (w *androidWork) doWork() (*AndroidTransformResult, error) {
 		return nil, err
 	}
 
-	generated := []AndroidDPIPath{}
+	generated := map[android.AndroidIconType][]transformer.AndroidGeneratedAsset{}
 	for _, iconType := range w.IconTypes {
-		dpiPaths, err := w.transform(iconType)
+		assets, err := w.transform(iconType)
 		if err != nil {
 			return nil, err
 		}
-		generated = append(generated, AndroidDPIPath{iconType, dpiPaths})
+
+		l := []transformer.AndroidGeneratedAsset{}
+		for _, v := range assets {
+			l = append(l, v)
+		}
+		generated[iconType] = l
 	}
 
 	return &AndroidTransformResult{w.AndroidTransformOpts, info, string(w.AndroidTransformOpts.Format), generated}, nil
@@ -65,7 +70,7 @@ func resolveIconTypes(types []string) []android.AndroidIconType {
 	return result
 }
 
-func (w *androidWork) transform(iconType android.AndroidIconType) (map[android.AssetDPI]string, error) {
+func (w *androidWork) transform(iconType android.AndroidIconType) (map[android.AssetDPI]transformer.AndroidGeneratedAsset, error) {
 	at, err := transformer.NewAndroidAssetTransformer(w.OutputDir)
 	if err != nil {
 		return nil, err
