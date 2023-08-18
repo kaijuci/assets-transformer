@@ -17,11 +17,16 @@ type AndroidTransformOpts struct {
 	Format        transformer.AssetFormat   `json:"-"`
 }
 
+type AndroidDPIPath struct {
+	IconType  android.AndroidIconType     `json:"icon_type"`
+	Generated map[android.AssetDPI]string `json:"generated_paths"`
+}
+
 type AndroidTransformResult struct {
 	AndroidTransformOpts `json:"input"`
-	AssetInfo            *transformer.AssetInfo                `json:"asset_info"`
-	OutputFormat         string                                `json:"output_format"`
-	GeneratedPaths       map[android.AndroidIconType][]*string `json:"generated"`
+	AssetInfo            *transformer.AssetInfo `json:"asset_info"`
+	OutputFormat         string                 `json:"output_format"`
+	Generated            []AndroidDPIPath       `json:"generated"`
 }
 
 type androidWork struct {
@@ -38,13 +43,13 @@ func (w *androidWork) doWork() (*AndroidTransformResult, error) {
 		return nil, err
 	}
 
-	generated := map[android.AndroidIconType][]*string{}
+	generated := []AndroidDPIPath{}
 	for _, iconType := range w.IconTypes {
-		paths, err := w.transform(iconType)
+		dpiPaths, err := w.transform(iconType)
 		if err != nil {
 			return nil, err
 		}
-		generated[iconType] = paths
+		generated = append(generated, AndroidDPIPath{iconType, dpiPaths})
 	}
 
 	return &AndroidTransformResult{w.AndroidTransformOpts, info, string(w.AndroidTransformOpts.Format), generated}, nil
@@ -60,13 +65,11 @@ func resolveIconTypes(types []string) []android.AndroidIconType {
 	return result
 }
 
-func (w *androidWork) transform(iconType android.AndroidIconType) ([]*string, error) {
+func (w *androidWork) transform(iconType android.AndroidIconType) (map[android.AssetDPI]string, error) {
 	at, err := transformer.NewAndroidAssetTransformer(w.OutputDir)
 	if err != nil {
 		return nil, err
 	}
-
-	result := []*string{}
 
 	opt := transformer.AndroidTransformOption{
 		IconType: iconType,
@@ -78,10 +81,5 @@ func (w *androidWork) transform(iconType android.AndroidIconType) ([]*string, er
 		return nil, err
 	}
 
-	for _, v := range gen {
-		path := v
-		result = append(result, &path)
-	}
-
-	return result, nil
+	return gen, nil
 }
