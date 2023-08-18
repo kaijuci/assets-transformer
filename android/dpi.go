@@ -4,6 +4,8 @@ import "fmt"
 
 type AssetDPI string
 
+const BaseDPI float32 = 160
+
 const (
 	LDPI    AssetDPI = "ldpi"
 	MDPI    AssetDPI = "mdpi"
@@ -17,7 +19,7 @@ type AssetResPath string
 
 const (
 	DrawableLDPI    AssetResPath = "drawable-ldpi"
-	DrawableMDPI    AssetResPath = "drawable-mdpi"
+	DrawableMDPI    AssetResPath = "drawable-mdpi" // baseline
 	DrawableHDPI    AssetResPath = "drawable-hdpi"
 	DrawableXHDPI   AssetResPath = "drawable-xhdpi"
 	DrawableXXHDPI  AssetResPath = "drawable-xxhdpi"
@@ -31,23 +33,27 @@ func NewDPIList() []AssetDPI {
 type AndroidAssetDensity struct {
 	DPI     AssetDPI     `json:"dpi"`
 	ResPath AssetResPath `json:"res_path"`
-	Width   uint         `json:"width"`
-	Height  uint         `json:"height"`
+	Pixels  uint         `json:"pixels"`
 }
 
 func (a AndroidAssetDensity) MakeAssetPath(asset string) string {
 	return fmt.Sprintf("%s/%s", a.ResPath, asset)
 }
 
+func (a AndroidAssetDensity) CalculateDimension(dp uint) uint {
+	px := uint(float32(dp) * (float32(a.Pixels) / BaseDPI))
+	return px
+}
+
 type AndroidAssetDensityDictionary map[AssetDPI]AndroidAssetDensity
 
 func NewAndroidAssetDensityDictionary() AndroidAssetDensityDictionary {
 	return AndroidAssetDensityDictionary{
-		LDPI:    AndroidAssetDensity{DPI: LDPI, ResPath: DrawableLDPI, Width: 36, Height: 36},
-		MDPI:    AndroidAssetDensity{DPI: MDPI, ResPath: DrawableMDPI, Width: 48, Height: 48},
-		HDPI:    AndroidAssetDensity{DPI: HDPI, ResPath: DrawableHDPI, Width: 72, Height: 72},
-		XHDPI:   AndroidAssetDensity{DPI: XHDPI, ResPath: DrawableXHDPI, Width: 96, Height: 96},
-		XXHDPI:  AndroidAssetDensity{DPI: XXHDPI, ResPath: DrawableXXHDPI, Width: 144, Height: 144},
-		XXXHDPI: AndroidAssetDensity{DPI: XXXHDPI, ResPath: DrawableXXXHDPI, Width: 192, Height: 192},
+		LDPI:    AndroidAssetDensity{DPI: LDPI, ResPath: DrawableLDPI, Pixels: 120},
+		MDPI:    AndroidAssetDensity{DPI: MDPI, ResPath: DrawableMDPI, Pixels: 160},
+		HDPI:    AndroidAssetDensity{DPI: HDPI, ResPath: DrawableHDPI, Pixels: 240},
+		XHDPI:   AndroidAssetDensity{DPI: XHDPI, ResPath: DrawableXHDPI, Pixels: 320},
+		XXHDPI:  AndroidAssetDensity{DPI: XXHDPI, ResPath: DrawableXXHDPI, Pixels: 480},
+		XXXHDPI: AndroidAssetDensity{DPI: XXXHDPI, ResPath: DrawableXXXHDPI, Pixels: 640},
 	}
 }

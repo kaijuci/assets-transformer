@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/kaijuci/transformer/android"
 )
@@ -13,8 +14,15 @@ type AndroidTransformOption struct {
 	Format   AssetFormat
 }
 
+type AndroidGeneratedAsset struct {
+	DPI           android.AssetDPI `json:"dpi"`
+	Width         uint             `json:"width"`
+	Height        uint             `json:"height"`
+	GeneratedPath string           `json:"path"`
+}
+
 type AndroidAssetTransformer interface {
-	TransformAsset(string, string, ...*AndroidTransformOption) (map[android.AssetDPI]string, error)
+	TransformAsset(string, string, ...*AndroidTransformOption) (map[android.AssetDPI]AndroidGeneratedAsset, error)
 }
 
 func NewAndroidAssetTransformer(workDir string) (AndroidAssetTransformer, error) {
@@ -39,7 +47,7 @@ type workflowOpt struct {
 	dpi     android.AssetDPI
 }
 
-func (i *androidimpl) TransformAsset(filename string, name string, options ...*AndroidTransformOption) (map[android.AssetDPI]string, error) {
+func (i *androidimpl) TransformAsset(filename string, name string, options ...*AndroidTransformOption) (map[android.AssetDPI]AndroidGeneratedAsset, error) {
 	opts, err := i.validateOptions(name, options)
 	if err != nil {
 		return nil, err
@@ -50,7 +58,7 @@ func (i *androidimpl) TransformAsset(filename string, name string, options ...*A
 		return nil, err
 	}
 
-	var paths map[android.AssetDPI]string = make(map[android.AssetDPI]string)
+	var output map[android.AssetDPI]AndroidGeneratedAsset = make(map[android.AssetDPI]AndroidGeneratedAsset)
 
 	for _, wopt := range opts {
 		err = i.ensureRootDir(wopt.rootDir)
@@ -62,10 +70,21 @@ func (i *androidimpl) TransformAsset(filename string, name string, options ...*A
 		if err != nil {
 			return nil, err
 		}
-		paths[wopt.dpi] = *path
+
+		info, err := GetImageInfo(*path)
+		if err != nil {
+			return nil, err
+		}
+
+		output[wopt.dpi] = AndroidGeneratedAsset{
+			DPI:           wopt.dpi,
+			Width:         info.Width,
+			Height:        info.Height,
+			GeneratedPath: *path,
+		}
 	}
 
-	return paths, nil
+	return output, nil
 }
 
 func (i *androidimpl) ensureRootDir(dirPath string) error {
@@ -89,10 +108,12 @@ func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOp
 
 	for _, dpi := range i.dpiList {
 		density := i.dpiDict[dpi]
+		pixels := density.CalculateDimension(spec.DPI)
 		path := fmt.Sprintf("%s/%s", i.workDir, density.ResPath)
-		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, name, src.Format)
+		// todo: sanitize `name` for android resource filename compliance
+		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, strings.ToLower(name), src.Format)
 		opt := TransformOption{
-			Size:    AssetSize{density.Width, density.Height},
+			Size:    AssetSize{Width: pixels, Height: pixels},
 			Format:  src.Format,
 			Outfile: filename,
 		}
