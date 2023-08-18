@@ -89,10 +89,11 @@ func (i *androidimpl) validateOptions(name string, options []*AndroidTransformOp
 
 	for _, dpi := range i.dpiList {
 		density := i.dpiDict[dpi]
+		pixels := density.CalculateDimension(spec.DPI)
 		path := fmt.Sprintf("%s/%s", i.workDir, density.ResPath)
 		filename := fmt.Sprintf("%s/%s/%s_%s.%s", i.workDir, density.ResPath, spec.Prefix, name, src.Format)
 		opt := TransformOption{
-			Size:    AssetSize{density.Width, density.Height},
+			Size:    AssetSize{Width: pixels, Height: pixels},
 			Format:  src.Format,
 			Outfile: filename,
 		}
